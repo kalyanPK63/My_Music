@@ -55,6 +55,16 @@ public class SongsController {
             return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/getByN/{songName}")
+    public ResponseEntity<?> getSongByN(@PathVariable String songName){
+        Optional<Songs> song = songRepo.findSongsBySongName(songName);
+
+        if (song.isPresent())
+            return ResponseEntity.ok(song.get());
+        else
+            return ResponseEntity.noContent().build();
+    }
+
     @DeleteMapping("/del/{id}")
     public ResponseEntity<?> deleteSong(@PathVariable String id){
         if (songRepo.existsById(id)){
