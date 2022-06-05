@@ -6,6 +6,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Document(collection = "Songs")
 @Data
@@ -17,6 +18,6 @@ public class Songs {
     private String songName;
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
     private LocalDate dateOfRelease;
-    private Artists artists;
+    private List<Artists> artists;
     private String cover;
 }

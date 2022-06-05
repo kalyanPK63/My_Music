@@ -35,11 +35,15 @@ public class SongsController {
         if (songRepo.existsSongsBySongNameEquals(song.getSongName()))
             return ResponseEntity.badRequest().body("Song already exists");
         else{
-            Artists a = song.getArtists();
-            if (artistRepo.existsArtistsByNameEquals(a.getName()))
-                ResponseEntity.status(HttpStatus.ALREADY_REPORTED);
-            else
-                artistRepo.insert(a);
+            List<Artists> ls = song.getArtists();
+
+            for (Artists a : ls) {
+                if (artistRepo.existsArtistsByNameEquals(a.getName()))
+                    ResponseEntity.status(HttpStatus.ALREADY_REPORTED);
+                else
+                    artistRepo.insert(ls);
+            }
+
             Songs s = songRepo.insert(song);
             return new ResponseEntity<>(s, HttpStatus.CREATED);
         }
@@ -82,6 +86,17 @@ public class SongsController {
             Artists a = artistRepo.insert(artist);
             return new ResponseEntity<>(a, HttpStatus.CREATED);
         }
+    }
+
+    @GetMapping("/getByA/{name}")
+    public StringBuilder getSongsByArtistName(@PathVariable String name){
+        List<Songs> SongsList = songRepo.findSongsByArtistsName(name);
+       StringBuilder sb = new StringBuilder();
+        for (Songs s : SongsList) {
+            String songName = s.getSongName();
+            sb.append(songName).append(",");
+        }
+        return sb;
     }
 
 }
