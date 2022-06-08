@@ -5,13 +5,17 @@ import com.my.my_music.model.Songs;
 import com.my.my_music.repo.ArtistRepo;
 import com.my.my_music.repo.SongRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
+@CrossOrigin(origins ="/http://localhost:8080")
 @RestController
 @RequestMapping("/songs")
 public class SongsController {
@@ -30,6 +34,7 @@ public class SongsController {
         return ResponseEntity.ok(songRepo.findAll());
     }
 
+    @CrossOrigin(origins ="/http://localhost:3000")
     @PostMapping("/add")
     public ResponseEntity<?> addSongs(@RequestBody Songs song){
         if (songRepo.existsSongsBySongNameEquals(song.getSongName()))
@@ -78,6 +83,7 @@ public class SongsController {
         else return ResponseEntity.notFound().build();
     }
 
+    @CrossOrigin(origins ="/http://localhost:3000")
     @PostMapping("/add/artist")
     public ResponseEntity<?> addArtist(@RequestBody Artists artist){
         if (artistRepo.existsArtistsByNameEquals(artist.getName()))
@@ -97,6 +103,26 @@ public class SongsController {
             sb.append(songName).append(",");
         }
         return sb;
+    }
+
+    @CrossOrigin(origins ="/http://localhost:8080")
+    @GetMapping("/get10")
+    public Stream<Songs> getTop10Songs(){
+        List<Songs> s = songRepo.findAll(Sort.by("avgRating"));
+        Collections.reverse(s);
+        return s.stream().limit(10);
+    }
+
+    @CrossOrigin(origins ="/http://localhost:3000")
+    @GetMapping("/getall/Artists")
+    public ResponseEntity<List<Artists>> getAllArtists(){
+        return ResponseEntity.ok(artistRepo.findAll());
+    }
+
+    @CrossOrigin(origins ="/http://localhost:3000")
+    @GetMapping("/getall/Artists/{id}")
+    public Optional<Artists> getOneArtist(@PathVariable String id){
+        return artistRepo.findById(id);
     }
 
 }

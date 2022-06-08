@@ -18,6 +18,7 @@ public class Songs {
     private String songName;
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
     private LocalDate dateOfRelease;
+    private double avgRating;
     private List<Artists> artists;
     private String cover;
 }
